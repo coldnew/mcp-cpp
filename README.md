@@ -38,8 +38,8 @@ You can optionally set the `CLANGD_PATH` environment variable to specify a custo
 ### Install from Crates.io (Recommended)
 
 ```bash
-# Install directly from the registry
-cargo install mcp-cpp-server
+# Install from GitHub
+cargo install mcp-cpp-server --git https://github.com/coldnew/mcp-cpp.git
 
 # The binary will be available in your cargo bin directory
 # (usually ~/.cargo/bin/mcp-cpp-server)
