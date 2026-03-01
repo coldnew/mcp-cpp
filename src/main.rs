@@ -19,7 +19,9 @@ use rust_mcp_sdk::schema::{
 };
 
 use rust_mcp_sdk::{
-    McpServer, StdioTransport, TransportOptions, error::SdkResult, mcp_server::server_runtime,
+    McpServer, StdioTransport, TransportOptions,
+    error::SdkResult,
+    mcp_server::{McpServerOptions, ToMcpServerHandler, server_runtime},
 };
 use std::path::PathBuf;
 use tracing::info;
@@ -125,6 +127,9 @@ async fn main() -> SdkResult<()> {
             name: "C++ MCP Server".to_string(),
             version: "0.1.0".to_string(),
             title: Some("C++ Project Analysis MCP Server".to_string()),
+            description: Some("C++ project analysis and LSP bridge server".to_string()),
+            icons: vec![],
+            website_url: None,
         },
         capabilities: ServerCapabilities {
             tools: Some(ServerCapabilitiesTools { list_changed: None }),
@@ -152,7 +157,14 @@ async fn main() -> SdkResult<()> {
     };
 
     // Create MCP server
-    let server = server_runtime::create_server(server_details, transport, handler);
+    let options = McpServerOptions {
+        server_details,
+        transport,
+        handler: handler.to_mcp_server_handler(),
+        task_store: None,
+        client_task_store: None,
+    };
+    let server = server_runtime::create_server(options);
 
     info!("C++ MCP Server ready and listening for requests");
 

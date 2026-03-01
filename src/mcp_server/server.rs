@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use rust_mcp_sdk::schema::{
-    CallToolRequest, CallToolResult, ListToolsRequest, ListToolsResult, RpcError,
+    CallToolRequestParams, CallToolResult, ListToolsResult, PaginatedRequestParams, RpcError,
     schema_utils::CallToolError,
 };
 use rust_mcp_sdk::{McpServer, mcp_server::ServerHandler};
@@ -10,9 +10,9 @@ use super::server_helpers::{self, McpToolHandler};
 use super::tools::analyze_symbols::AnalyzeSymbolContextTool;
 use super::tools::project_tools::GetProjectDetailsTool;
 use super::tools::search_symbols::SearchSymbolsTool;
+use crate::log_timing;
 use crate::project::{ProjectError, ProjectWorkspace, WorkspaceSession};
 use crate::register_tools;
-use crate::{log_mcp_message, log_timing};
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Instant;
@@ -120,12 +120,11 @@ register_tools! {
 impl ServerHandler for CppServerHandler {
     async fn handle_list_tools_request(
         &self,
-        request: ListToolsRequest,
+        _params: Option<PaginatedRequestParams>,
         _runtime: Arc<dyn McpServer>,
     ) -> std::result::Result<ListToolsResult, RpcError> {
         let start = Instant::now();
 
-        log_mcp_message!(Level::INFO, "incoming", "list_tools", &request);
         info!("Listing available tools");
 
         let result = ListToolsResult {
@@ -134,7 +133,6 @@ impl ServerHandler for CppServerHandler {
             tools: Self::registered_tools(),
         };
 
-        log_mcp_message!(Level::INFO, "outgoing", "list_tools", &result);
         log_timing!(Level::DEBUG, "list_tools", start.elapsed());
 
         Ok(result)
@@ -142,21 +140,17 @@ impl ServerHandler for CppServerHandler {
 
     async fn handle_call_tool_request(
         &self,
-        request: CallToolRequest,
+        params: CallToolRequestParams,
         _runtime: Arc<dyn McpServer>,
     ) -> std::result::Result<CallToolResult, CallToolError> {
         let start = Instant::now();
-        let tool_name = request.params.name.clone();
+        let tool_name = params.name.clone();
 
-        log_mcp_message!(Level::INFO, "incoming", "call_tool", &request);
         info!("Executing tool: {}", tool_name);
 
         // Generated dispatch with compile-time safety
-        let result = self
-            .dispatch_tool(&tool_name, request.params.arguments)
-            .await?;
+        let result = self.dispatch_tool(&tool_name, params.arguments).await?;
 
-        log_mcp_message!(Level::INFO, "outgoing", "call_tool", &result);
         log_timing!(
             Level::DEBUG,
             &format!("call_tool_{tool_name}"),
