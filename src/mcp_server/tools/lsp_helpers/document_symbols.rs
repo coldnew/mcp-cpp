@@ -287,7 +287,7 @@ impl SymbolSearchBuilder {
             .collect();
 
         // Sort by score (highest first)
-        scored_matches.sort_by(|a, b| b.score.cmp(&a.score));
+        scored_matches.sort_by_key(|b| std::cmp::Reverse(b.score));
 
         // Return just the symbols
         scored_matches
