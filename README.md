@@ -169,8 +169,8 @@ For [opencode](https://opencode.ai), add to your opencode configuration file (`~
   "mcp": {
     "cpp": {
       "type": "local",
-      "command": "mcp-cpp-server",
-      "env": {
+      "command": ["mcp-cpp-server"],
+      "environment": {
         "CLANGD_PATH": "/usr/bin/clangd-20"
       }
     }
