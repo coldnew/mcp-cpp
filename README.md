@@ -160,6 +160,30 @@ Claude Code uses a different configuration file location and requires explicit p
 - Adjust `CLANGD_PATH` to your clangd installation (use `which clangd` to find it, or omit if clangd is in your PATH)
 - Tools are prefixed with `mcp__cpp__` in Claude Code (e.g., `mcp__cpp__search_symbols`)
 
+### opencode Integration
+
+For [opencode](https://opencode.ai), add to your opencode configuration file (`~/.config/opencode/opencode.json`):
+
+```json
+{
+  "mcp": {
+    "cpp": {
+      "type": "local",
+      "command": "mcp-cpp-server",
+      "env": {
+        "CLANGD_PATH": "/usr/bin/clangd-20"
+      }
+    }
+  }
+}
+```
+
+**Notes:**
+- opencode reads `~/.config/opencode/opencode.json` for MCP server configuration
+- Use `type: "local"` for stdio-based servers
+- Adjust `CLANGD_PATH` to your clangd installation (use `which clangd` to find it, or omit if clangd is in your PATH)
+- Tools are available as `mcp__cpp__search_symbols`, `mcp__cpp__analyze_symbol_context`, and `mcp__cpp__get_project_details`
+
 ### Docker Usage with MCP Clients
 
 **Claude Desktop/CLI:**
