@@ -10,6 +10,7 @@ use super::server_helpers::{self, McpToolHandler};
 use super::tools::analyze_symbols::AnalyzeSymbolContextTool;
 use super::tools::project_tools::GetProjectDetailsTool;
 use super::tools::search_symbols::SearchSymbolsTool;
+use crate::log_mcp_message;
 use crate::log_timing;
 use crate::project::{ProjectError, ProjectWorkspace, WorkspaceSession};
 use crate::register_tools;
