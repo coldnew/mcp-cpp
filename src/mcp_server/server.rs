@@ -120,11 +120,12 @@ register_tools! {
 impl ServerHandler for CppServerHandler {
     async fn handle_list_tools_request(
         &self,
-        _params: Option<PaginatedRequestParams>,
+        params: Option<PaginatedRequestParams>,
         _runtime: Arc<dyn McpServer>,
     ) -> std::result::Result<ListToolsResult, RpcError> {
         let start = Instant::now();
 
+        log_mcp_message!(Level::INFO, "incoming", "list_tools", &params);
         info!("Listing available tools");
 
         let result = ListToolsResult {
@@ -146,6 +147,7 @@ impl ServerHandler for CppServerHandler {
         let start = Instant::now();
         let tool_name = params.name.clone();
 
+        log_mcp_message!(Level::INFO, "incoming", "call_tool", &params);
         info!("Executing tool: {}", tool_name);
 
         // Generated dispatch with compile-time safety

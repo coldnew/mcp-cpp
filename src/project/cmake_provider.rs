@@ -60,9 +60,7 @@ impl CmakeProvider {
         }
 
         // If CMAKE_SOURCE_DIR not found, try project-specific SOURCE_DIR
-        if source_dir.is_none()
-            && let Some(name) = project_name
-        {
+        if let (None, Some(name)) = (&source_dir, &project_name) {
             let project_source_dir_key = format!("{}_SOURCE_DIR", name);
 
             for line in content.lines() {

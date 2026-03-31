@@ -127,7 +127,7 @@ async fn main() -> SdkResult<()> {
             name: "C++ MCP Server".to_string(),
             version: "0.1.0".to_string(),
             title: Some("C++ Project Analysis MCP Server".to_string()),
-            description: Some("C++ project analysis and LSP bridge server".to_string()),
+            description: None,
             icons: vec![],
             website_url: None,
         },
@@ -157,14 +157,13 @@ async fn main() -> SdkResult<()> {
     };
 
     // Create MCP server
-    let options = McpServerOptions {
+    let server = server_runtime::create_server(McpServerOptions {
         server_details,
         transport,
         handler: handler.to_mcp_server_handler(),
         task_store: None,
         client_task_store: None,
-    };
-    let server = server_runtime::create_server(options);
+    });
 
     info!("C++ MCP Server ready and listening for requests");
 
